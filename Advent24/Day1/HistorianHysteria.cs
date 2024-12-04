@@ -2,10 +2,9 @@
 
 public static class HistorianHysteria
 {
-    // private const string FilePath = "input.txt";
     private static readonly string FilePath = Path.Combine(Environment.CurrentDirectory, "Day1/input.txt");
 
-    public static int Solve()
+    public static int Part1()
     {
         var lists = Parse();
         
@@ -18,6 +17,22 @@ public static class HistorianHysteria
         return totalDifferences;
     }
     
+    public static int Part2()
+    {
+        var lists = Parse();
+
+        var list2Counts = lists.List2.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
+
+        var similarityScore = 0;
+        foreach (var number in lists.List1)
+        {
+            list2Counts.TryGetValue(number, out var count);
+            similarityScore += number * count;
+        }
+
+        return similarityScore;
+    }
+
     private static (List<int> List1, List<int> List2) Parse()
     {
         var list1 = new List<int>();
