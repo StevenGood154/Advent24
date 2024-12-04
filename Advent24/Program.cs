@@ -1,4 +1,6 @@
-﻿using Advent24.Day1;
+﻿// Run solution logic from here
 
-var solution = HistorianHysteria.Solve();
-Console.WriteLine(solution);
+// using Advent24.Day1;
+
+// var solution = Day1.Part1()
+// Console.WriteLine(solution);
