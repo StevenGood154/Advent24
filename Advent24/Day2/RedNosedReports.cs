@@ -10,15 +10,29 @@ public static class RedNosedReports
     public static int Part1()
     {
         var reports = Parse();
-        return reports.Where(IsReportSafe).Count();
+        return reports.Where(IsReportSafeWithoutProblemDampener).Count();
     }
 
-    private static bool IsReportSafe(List<int> report)
+    public static int Part2()
+    {
+        var reports = Parse();
+        return reports.Where(IsReportSafeWithProblemDampener).Count();
+    }
+
+    private static bool IsReportSafeWithoutProblemDampener(List<int> report)
     {
         var levelPairs = report.Zip(report.Skip(1), (first, second) => (first, second)).ToList();
         return AreLevelPairsGraduallyIncreasing(levelPairs) || AreLevelPairsGraduallyDecreasing(levelPairs); 
     }
-    
+
+    private static bool IsReportSafeWithProblemDampener(List<int> report)
+    {
+        var reportsWithOneLevelRemoved= Enumerable.Range(0, report.Count).Select(report.TakeAllButNth).Select(e => e.ToList());
+        return IsReportSafeWithoutProblemDampener(report) || reportsWithOneLevelRemoved.Any(IsReportSafeWithoutProblemDampener);
+    }
+
+    private static IEnumerable<T> TakeAllButNth<T>(this ICollection<T> collection, int n) => collection.Take(n).Concat(collection.Skip(n + 1));
+
     private static bool AreLevelPairsGraduallyIncreasing(IEnumerable<(int first, int second)> levelPairs)
     {
         return levelPairs.All(pair =>
@@ -27,7 +41,7 @@ public static class RedNosedReports
             return difference is >= MinDifference and <= MaxDifference;
         }); 
     }
-    
+
     private static bool AreLevelPairsGraduallyDecreasing(IEnumerable<(int first, int second)> levelPairs)
     {
         return levelPairs.All(pair =>
@@ -36,7 +50,7 @@ public static class RedNosedReports
             return difference is <= -MinDifference and >= -MaxDifference;
         }); 
     }
-    
+
     private static List<List<int>> Parse()
     {
         var reports = new List<List<int>>();
