@@ -2,7 +2,7 @@
 
 public static class HistorianHysteria
 {
-    private static readonly string FilePath = Path.Combine(Environment.CurrentDirectory, "Day1/input.txt");
+    private static readonly string FilePath = Path.Combine(Environment.CurrentDirectory, "Input/day1.txt");
 
     public static int Part1()
     {

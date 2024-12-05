@@ -2,7 +2,7 @@
 
 public static class RedNosedReports
 {
-    private static readonly string FilePath = Path.Combine(Environment.CurrentDirectory, "Day2/input.txt");
+    private static readonly string FilePath = Path.Combine(Environment.CurrentDirectory, "Input/day2.txt");
 
     private const int MinDifference = 1;
     private const int MaxDifference = 3;
