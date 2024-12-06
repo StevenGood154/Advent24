@@ -17,8 +17,40 @@ public static partial class MullItOver
         return products.Sum();
     }
     
+    public static int Part2()
+    {
+        var fileContents = Parse();
+
+        var regex = MultiplyRegexWithEnable();
+        var matches = regex.Matches(fileContents);
+
+        var isMulEnabled = true;
+        var sum = 0;
+        foreach (Match match in matches)
+        {
+            if (match.Value == "do()")
+            {
+                isMulEnabled = true;
+            }
+            else if (match.Value == "don't()")
+            {
+                isMulEnabled = false;
+            }
+            else if (isMulEnabled)
+            {
+                var first = int.Parse(match.Groups[1].Value);
+                var second = int.Parse(match.Groups[2].Value);
+                sum += first * second;
+            }
+        }
+        return sum;
+    }
+
     [GeneratedRegex(@"mul\((\d+),(\d+)\)")]
     private static partial Regex MultiplyRegex();
+
+    [GeneratedRegex(@"mul\((\d+),(\d+)\)|do\(\)|don't\(\)")]
+    private static partial Regex MultiplyRegexWithEnable();
 
     private static string Parse()
     {
