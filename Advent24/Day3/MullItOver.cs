@@ -57,4 +57,3 @@ public static partial class MullItOver
         return File.ReadAllText(FilePath);
     }
 }
-

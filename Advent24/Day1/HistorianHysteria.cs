@@ -59,4 +59,3 @@ public static class HistorianHysteria
         return (list1, list2);
     }
 }
-
