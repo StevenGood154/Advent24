@@ -9,7 +9,8 @@ public static class CeresSearch
         var characterMap = Parse();
 
         var xCoordinates = characterMap['X'];
-        var wordCount = xCoordinates.Sum(c => CountWordInDirectionsFromStart(characterMap, c, "XMAS", ValidDirections));
+        var wordCount = xCoordinates.Sum(coordinate =>
+            Direction.All.Count(direction => IsWordThroughCharacterInDirection(characterMap, coordinate, 0,"XMAS", direction)));
 
         return wordCount;
     }
@@ -27,26 +28,6 @@ public static class CeresSearch
         );
 
         return wordCount;
-    }
-
-    private static int CountWordInDirectionsFromStart(Dictionary<char, HashSet<Coordinate>> characterMap, Coordinate staringCoordinate, string word, IEnumerable<Coordinate> directions)
-    {
-        return directions.Count(direction => IsWordInDirectionFromStart(characterMap, staringCoordinate, word, direction));
-    }
-
-    private static bool IsWordInDirectionFromStart(Dictionary<char, HashSet<Coordinate>> characterMap, Coordinate staringCoordinate, string word, Coordinate direction)
-    {
-        for (var charIndex = 0; charIndex < word.Length; charIndex++)
-        {
-            var character = word[charIndex];
-            var offsetFromStartOfWord = direction * new Coordinate(charIndex, charIndex);
-            if (!characterMap[character].Contains(staringCoordinate + offsetFromStartOfWord))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private static bool IsWordThroughCharacterInDirection(
@@ -68,18 +49,6 @@ public static class CeresSearch
 
         return true;
     }
-
-    private static HashSet<Coordinate> ValidDirections { get; } =
-    [
-        new Coordinate(1, 1),
-        new Coordinate(1, 0),
-        new Coordinate(1, -1),
-        new Coordinate(-1, 1),
-        new Coordinate(-1, 0),
-        new Coordinate(-1, -1),
-        new Coordinate(0, 1),
-        new Coordinate(0, -1),
-    ];
 
     private static Dictionary<char, HashSet<Coordinate>> Parse()
     {
@@ -123,6 +92,16 @@ public static class CeresSearch
         public static readonly Coordinate DownLeft = new(-1, -1);
         public static readonly Coordinate Right = new(0, 1);
         public static readonly Coordinate Left = new(0, -1);
+        public static HashSet<Coordinate> All { get; } =
+        [
+            new Coordinate(1, 1),
+            new Coordinate(1, 0),
+            new Coordinate(1, -1),
+            new Coordinate(-1, 1),
+            new Coordinate(-1, 0),
+            new Coordinate(-1, -1),
+            new Coordinate(0, 1),
+            new Coordinate(0, -1),
+        ];
     }
 }
-
