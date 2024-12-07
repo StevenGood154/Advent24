@@ -14,6 +14,21 @@ public static class CeresSearch
         return wordCount;
     }
 
+    public static int Part2()
+    {
+        var characterMap = Parse();
+
+        var aCoordinates = characterMap['A'];
+        var wordCount = aCoordinates.Count(c =>
+            (IsWordThroughCharacterInDirection(characterMap, c, 1, "MAS", Direction.UpRight)
+             || IsWordThroughCharacterInDirection(characterMap, c, 1, "MAS", Direction.DownLeft))
+           && (IsWordThroughCharacterInDirection(characterMap, c, 1, "MAS", Direction.UpLeft)
+             || IsWordThroughCharacterInDirection(characterMap, c, 1, "MAS", Direction.DownRight))
+        );
+
+        return wordCount;
+    }
+
     private static int CountWordInDirectionsFromStart(Dictionary<char, HashSet<Coordinate>> characterMap, Coordinate staringCoordinate, string word, IEnumerable<Coordinate> directions)
     {
         return directions.Count(direction => IsWordInDirectionFromStart(characterMap, staringCoordinate, word, direction));
@@ -26,6 +41,26 @@ public static class CeresSearch
             var character = word[charIndex];
             var offsetFromStartOfWord = direction * new Coordinate(charIndex, charIndex);
             if (!characterMap[character].Contains(staringCoordinate + offsetFromStartOfWord))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool IsWordThroughCharacterInDirection(
+        Dictionary<char, HashSet<Coordinate>> characterMap,
+        Coordinate characterCoordinate,
+        int characterCoordinateIndexInWord,
+        string word,
+        Coordinate direction)
+    {
+        for (var charIndex = 0; charIndex < word.Length; charIndex++)
+        {
+            var character = word[charIndex];
+            var offsetFromStartOfWord = direction * new Coordinate(charIndex - characterCoordinateIndexInWord, charIndex - characterCoordinateIndexInWord);
+            if (!characterMap[character].Contains(characterCoordinate + offsetFromStartOfWord))
             {
                 return false;
             }
@@ -76,6 +111,18 @@ public static class CeresSearch
         public static Coordinate operator +(Coordinate left, Coordinate right) => new(left.Row + right.Row, left.Column + right.Column);
         public static Coordinate operator -(Coordinate left, Coordinate right) => new(left.Row - right.Row, left.Column - right.Column);
         public static Coordinate operator *(Coordinate left, Coordinate right) => new(left.Row * right.Row, left.Column * right.Column);
+    }
+
+    private static class Direction
+    {
+        public static readonly Coordinate UpRight = new(1, 1);
+        public static readonly Coordinate Up = new(1, 0);
+        public static readonly Coordinate UpLeft = new(1, -1);
+        public static readonly Coordinate DownRight = new(-1, 1);
+        public static readonly Coordinate Down = new(-1, 0);
+        public static readonly Coordinate DownLeft = new(-1, -1);
+        public static readonly Coordinate Right = new(0, 1);
+        public static readonly Coordinate Left = new(0, -1);
     }
 }
 
