@@ -12,7 +12,18 @@ public static class PrintQueue
         return middlePages.Sum();
     }
 
-    private static bool IsUpdateValid(List<int> update, List<(int Left, int Right)> rules)
+    public static int Part2()
+    {
+        var (rules, updates) = Parse();
+
+        var rulesComparer = new RulesComparer(rules);
+        var middlePages = updates.Where(update => !IsUpdateValid(update, rules))
+            .Select(update => update.OrderBy(u => u, rulesComparer).ToList())
+            .Select(GetMiddlePage);
+        return middlePages.Sum();
+    }
+
+    private static bool IsUpdateValid(List<int> update, HashSet<(int Left, int Right)> rules)
     {
         return rules.All(rule => IsUpdateValidOnRule(update, rule));
     }
@@ -35,9 +46,9 @@ public static class PrintQueue
         return update[middleIndex];
     }
 
-    private static (List<(int Left, int Right)> Rules, List<List<int>> Updates) Parse()
+    private static (HashSet<(int Left, int Right)> Rules, List<List<int>> Updates) Parse()
     {
-        var rules = new List<(int, int)>();
+        var rules = new HashSet<(int, int)>();
         var updates = new List<List<int>>();
 
         var isRuleSection = true;
@@ -61,5 +72,21 @@ public static class PrintQueue
         }
         
         return (rules, updates);
+    }
+
+    private class RulesComparer(HashSet<(int Left, int Right)> rules) : IComparer<int>
+    {
+        public int Compare(int x, int y)
+        {
+            if (rules.Contains((x, y)))
+            {
+                return -1;
+            };
+            if (rules.Contains((y, x)))
+            {
+                return 1;
+            };
+            return 0;
+        }
     }
 }
